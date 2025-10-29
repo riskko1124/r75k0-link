@@ -4,8 +4,48 @@ const page = document.querySelector('.page');
 const linksContainer = document.getElementById('links-container');
 const catWrapper = document.querySelector('.cat-wrapper');
 const copyToast = document.getElementById('copy-toast');
+const overlay = document.getElementById('modal-overlay');
+const titleEl = document.getElementById('modal-title');
+const contentEl = document.getElementById('modal-content');
+const closeEl = document.getElementById('modal-close');
 
 const SPLASH_DURATION = prefersReducedMotion ? 400 : 2400;
+
+function openModal(title, content) {
+  if (!overlay || !titleEl || !contentEl) {
+    return;
+  }
+  titleEl.textContent = title;
+  contentEl.textContent = content;
+  overlay.classList.remove('hidden');
+  overlay.setAttribute('aria-hidden', 'false');
+}
+
+function closeModal() {
+  if (!overlay) {
+    return;
+  }
+  overlay.classList.add('hidden');
+  overlay.setAttribute('aria-hidden', 'true');
+}
+
+if (closeEl) {
+  closeEl.addEventListener('click', closeModal);
+}
+
+if (overlay) {
+  overlay.addEventListener('click', (event) => {
+    if (event.target === overlay) {
+      closeModal();
+    }
+  });
+}
+
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape') {
+    closeModal();
+  }
+});
 
 function revealPage() {
   page.classList.add('show');
@@ -37,12 +77,15 @@ async function loadLinks() {
 
 function createLinkElement(linkData) {
   const isCopyAction = Object.prototype.hasOwnProperty.call(linkData, 'copy');
-  const element = document.createElement(isCopyAction ? 'button' : 'a');
+  const isModalAction = linkData.type === 'modal';
+  const element = document.createElement(isCopyAction || isModalAction ? 'button' : 'a');
   element.className = 'link-button';
 
-  if (isCopyAction) {
+  if (isCopyAction || isModalAction) {
     element.type = 'button';
-    element.dataset.copyValue = linkData.copy;
+    if (isCopyAction) {
+      element.dataset.copyValue = linkData.copy;
+    }
   } else {
     element.href = linkData.url;
     element.target = '_blank';
@@ -54,29 +97,61 @@ function createLinkElement(linkData) {
   label.textContent = linkData.label;
   element.appendChild(label);
 
-  const interactionHandler = (event) => {
+  let catContainer = null;
+  if (linkData.cat) {
+    catContainer = document.createElement('div');
+    catContainer.className = 'btn-with-cat';
+    const catImage = document.createElement('img');
+    catImage.className = 'cat-on-button';
+    catImage.src = 'https://i.imgur.com/25ssfgl.png';
+    catImage.alt = 'Mascote';
+    catContainer.appendChild(catImage);
+    catContainer.appendChild(element);
+  }
+
+  const bounceCatOnButton = () => {
+    if (!catContainer) {
+      return;
+    }
+    catContainer.classList.add('is-clicking');
+    clearTimeout(catContainer._catTimeoutId);
+    catContainer._catTimeoutId = setTimeout(() => {
+      catContainer.classList.remove('is-clicking');
+    }, 220);
+  };
+
+  const activate = () => {
     if (isCopyAction) {
-      event.preventDefault();
       handleCopyAction(element.dataset.copyValue || '');
+    } else if (isModalAction) {
+      openModal(linkData.label, linkData.content || '');
     }
     triggerCatJump();
+    bounceCatOnButton();
   };
 
   const pointerHandler = (event) => {
     createRipple(event);
   };
 
-  element.addEventListener('click', interactionHandler);
+  element.addEventListener('click', (event) => {
+    if (isCopyAction || isModalAction) {
+      event.preventDefault();
+      activate();
+    } else {
+      triggerCatJump();
+      bounceCatOnButton();
+    }
+  });
   element.addEventListener('pointerdown', pointerHandler);
   element.addEventListener('keyup', (event) => {
-    if ((event.code === 'Enter' || event.code === 'Space') && isCopyAction) {
+    if ((event.code === 'Enter' || event.code === 'Space') && (isCopyAction || isModalAction)) {
       event.preventDefault();
-      handleCopyAction(element.dataset.copyValue || '');
-      triggerCatJump();
+      activate();
     }
   });
 
-  return element;
+  return catContainer || element;
 }
 
 function createRipple(event) {

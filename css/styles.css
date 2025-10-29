@@ -34,10 +34,30 @@ body::before {
   background-image:
     linear-gradient(120deg, rgba(0, 0, 0, 0.85), rgba(10, 0, 20, 0.55)),
     url('https://i.imgur.com/QsYDbWE.jpeg');
-  background-size: cover;
-  background-position: center;
+  /* ↓↓↓ ajustes ↓↓↓ */
+  --bg-scale: 110%;              /* escala padrão: mostra mais da arte */
+  background-repeat: no-repeat;
+  background-position: center top; /* sobe o enquadramento para revelar os rostos */
+  background-size: var(--bg-scale) auto; /* controla o “zoom” por largura */
+  background-color: #000;        /* fallback para bordas eventualmente visíveis */
   z-index: -2;
   filter: saturate(110%) contrast(105%);
+}
+
+/* Telas muito largas: reduz ainda mais o zoom (mostra mais personagens) */
+@media (min-width: 1200px) {
+  body::before {
+    --bg-scale: 100%;
+    background-position: center 8%;
+  }
+}
+
+/* Mobile: mantém um pouco mais de preenchimento para evitar “bordas” */
+@media (max-width: 600px) {
+  body::before {
+    --bg-scale: 125%;
+    background-position: center 10%;
+  }
 }
 
 body::after {

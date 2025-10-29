@@ -1,5 +1,15 @@
 [
-  { "label": "MeoW Group", "url": "https://discord.gg/2QV7MWDr" },
+  { "label": "MeoW Group", "url": "https://discord.gg/2QV7MWDr", "cat": true },
   { "label": "Steam", "url": "https://steamcommunity.com/id/xriskko/" },
-  { "label": "Discord", "copy": ".riskko" }
+  { "label": "Discord", "copy": ".riskko" },
+  {
+    "label": "Configurações PC",
+    "type": "modal",
+    "content": "RTX 4060\nIntel Core i5-10400F\n16 GB RAM\nPlaca-mãe B560M PRO-E"
+  },
+  {
+    "label": "Equipe",
+    "type": "modal",
+    "content": "R75K0\nRDG"
+  }
 ]

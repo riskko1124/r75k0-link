@@ -33,13 +33,12 @@ body::before {
   inset: 0;
   background-image:
     linear-gradient(120deg, rgba(0, 0, 0, 0.85), rgba(10, 0, 20, 0.55)),
-    url('https://i.imgur.com/QsYDbWE.jpeg');
-  /* ↓↓↓ ajustes ↓↓↓ */
-  --bg-scale: 110%;              /* escala padrão: mostra mais da arte */
+    url('https://i.imgur.com/rxe2KzX.jpeg');
+  --bg-scale: 110%;
   background-repeat: no-repeat;
-  background-position: center top; /* sobe o enquadramento para revelar os rostos */
-  background-size: var(--bg-scale) auto; /* controla o “zoom” por largura */
-  background-color: #000;        /* fallback para bordas eventualmente visíveis */
+  background-position: center 8%;
+  background-size: var(--bg-scale) auto;
+  background-color: #000;
   z-index: -2;
   filter: saturate(110%) contrast(105%);
 }
@@ -48,7 +47,7 @@ body::before {
 @media (min-width: 1200px) {
   body::before {
     --bg-scale: 100%;
-    background-position: center 8%;
+    background-position: center 5%;
   }
 }
 
@@ -56,7 +55,7 @@ body::before {
 @media (max-width: 600px) {
   body::before {
     --bg-scale: 125%;
-    background-position: center 10%;
+    background-position: center 12%;
   }
 }
 
@@ -313,4 +312,84 @@ body::after {
   text-align: center;
   color: rgba(242, 242, 242, 0.8);
   font-size: 0.9rem;
+}
+
+/* Botão com gato “sentado” */
+.btn-with-cat {
+  position: relative;
+}
+
+.cat-on-button {
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  transform: translate(-50%, 30%);
+  width: 84px;
+  height: auto;
+  pointer-events: none;
+  filter: drop-shadow(0 0 14px rgba(255, 0, 60, 0.45));
+  transition: transform 0.35s ease;
+}
+
+.btn-with-cat.is-clicking .cat-on-button {
+  transform: translate(-50%, 10%) scale(1.05);
+}
+
+@media (max-width: 600px) {
+  .cat-on-button {
+    width: 64px;
+  }
+}
+
+/* Modal */
+.modal.hidden {
+  display: none;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+}
+
+.modal-box {
+  width: min(92vw, 520px);
+  background: rgba(5, 0, 12, 0.9);
+  border: 1px solid rgba(255, 0, 60, 0.6);
+  box-shadow: 0 0 25px rgba(255, 0, 60, 0.35);
+  border-radius: 18px;
+  padding: 1.5rem;
+  backdrop-filter: blur(8px);
+}
+
+.modal-title {
+  margin: 0 0 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08rem;
+  text-shadow: 0 0 12px rgba(255, 0, 60, 0.45);
+}
+
+.modal-content {
+  margin: 0;
+  white-space: pre-wrap;
+  line-height: 1.5;
+  color: rgba(242, 242, 242, 0.92);
+}
+
+.modal-close {
+  margin-top: 1rem;
+  padding: 0.6rem 1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 0, 60, 0.7);
+  background: rgba(10, 0, 20, 0.65);
+  color: #fff;
+  cursor: pointer;
+}
+
+.modal-close:hover {
+  box-shadow: 0 0 15px rgba(255, 0, 60, 0.5);
 }
